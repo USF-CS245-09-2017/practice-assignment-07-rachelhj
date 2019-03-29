@@ -1,72 +1,60 @@
 
 public class LinkedList<T> implements List<T>{
-    private static Node head;
-    public static int size = 0;
-    
-    Object[] tempArray = new Object[size];
-    T[] arr = (T[]) tempArray;  
-    
+    private Node head;
+    public int size;
+ 
     public LinkedList(){
-       head = new Node(null);
+       head = null;
+       size = 0;
     }
     
-    public static class Node<T>{
+    class Node{
 	T data;
 	Node next;
-	public Node(T data){
+	Node(T data){
             this.data = data;
             next=null;
-        }
-        public void setNext(Node next){
-            this.next = next;
-        }
-        public void setData(T data){
-            this.data = data;
-        }
-        public Node getNext(){
-            return next;
-        }
-        public T getData(){
-            return data;
         }
     }
     
     @Override
-    public void add(T item){
-        if(head==null){
-            Node <T> newNode = new Node(item);
-            head = newNode;
-            size++;
+    public void add(T item){    
+        if(size==0){
+            Node newNode = new Node(item);
+            head = newNode; 
         }
         else{
             Node prev = head;
             for(int i=0;i<size-1;i++){
-                prev = prev.getNext();
+                prev = prev.next;
             }
-            Node <T> newNode = new Node(item);
-            prev.setNext(newNode);
-            size++;
+            Node newNode = new Node(item);
+            prev.next = newNode;
         }
+        size++;
     }
     @Override
-    public void add(int pos, T item){      
-        if(pos<=size&&pos>=0 == false){
+    public void add(int pos, T item){
+        if(!(pos<=size&&pos>=0)){
             throw new ArrayIndexOutOfBoundsException();
         }
         if(pos == 0){
             Node node = new Node(item);
-            node.setNext(head);	
+            node.next = head;	
             head = node;
+            
 	}
-        Node node = new Node(null);
-        node.next = head;
-        Node node2 = node;
-        for(int i=0;i<pos;i++){
-            node2 = node2.next;
-        }
-        Node newNode = new Node(item);
-        newNode.next = node2.next;
-        node2.next = newNode;
+        else{
+            Node node = new Node(null);
+            node.next = head;
+            Node node2 = node;
+            for(int i=0;i<pos;i++){
+                node2 = node2.next;
+            }
+            Node newNode = new Node(item);
+            newNode.next = node2.next;
+            node2.next = newNode;
+            }
         size++;
     }    
     @Override
@@ -74,18 +62,11 @@ public class LinkedList<T> implements List<T>{
         if(pos>=0 && pos<size == false){
             throw new ArrayIndexOutOfBoundsException();
         }
-        Node curr = new Node(null);
-        if(head != null){
-            curr = head.getNext();
-            for(int i=0;i<pos;i++){
-                if(curr.getNext()==null){
-                    return null;
-                }
-                curr = curr.getNext();
-            }
-            return (T) curr.getData();
+        Node curr = head;           
+        for(int i=0;i<pos;i++){
+            curr = curr.next;
         }
-        return (T) curr;
+        return curr.data;
     }
     @Override
     public T remove(int pos){
@@ -94,19 +75,19 @@ public class LinkedList<T> implements List<T>{
         }
         if(pos==0){
             Node curr = head;
-            head = curr.getNext();
+            head = curr.next;
             --size;
-            return (T) curr.getData();
+            return curr.data;
 	}
 	else{
             Node prev = head;
             for(int i=0;i<pos-1;i++){
-                prev = prev.getNext();
+                prev = prev.next;
             }
-            Node curr = prev.getNext();
-            prev.setNext(curr.getNext());
+            Node curr = prev.next;
+            prev.next = curr.next;
             --size;
-            return (T) curr.getData();
+            return curr.data;
 	}
 
     }

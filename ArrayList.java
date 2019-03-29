@@ -1,17 +1,16 @@
 
 import java.util.Arrays;
 public class ArrayList<T> implements List<T>{
-    int count = 0;
-    public Object[] tempArray;
+    int count;
     public T[] arr;
     
     public ArrayList(){
-        tempArray = new Object[10];
-        arr = (T[]) tempArray;
+        arr = (T[]) new Object[10];
+        count = 0;
     }
     @Override
     public void add(T item){
-        if(arr.length-count<2){
+        if(arr.length<=count){
             growList();
         }
         arr[count++]=item;
@@ -21,10 +20,18 @@ public class ArrayList<T> implements List<T>{
         if(pos <= count && pos >= 0){
             count++;
         }
-        if(arr.length-count<2){
+        else{
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        if(arr.length<=count){
             growList();
         }
-        arr[pos] = item;       
+        int temp = count-2;
+        while (temp>=pos){
+            arr[temp+1]=arr[temp];
+            temp--;
+        }
+        arr[pos] = item;
     }        
     @Override
     public T get(int pos){
@@ -39,14 +46,12 @@ public class ArrayList<T> implements List<T>{
     public T remove(int pos){
         if(pos<count){
             T item = arr[pos];
-            arr[pos] = null;
             int temp = pos;
+            count--;
             while(temp<count){
                 arr[temp]=arr[temp+1];
-                arr[temp+1]=null;
                 temp++;
             }
-            count--;
             return item;
         }
         else{
